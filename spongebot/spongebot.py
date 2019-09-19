@@ -50,7 +50,10 @@ class SpongeBot:
         else:
             # Otherwise create new snapshot. The files that are already in the
             # directory will be ignored.
-            self.snapshot = set(os.listdir(self.path))
+            files = os.listdir(self.path)
+            with open(self.snapshot_file, 'w') as f:
+                f.write('\n'.join(files) + '\n')
+            self.snapshot = set(files)
         self.running = False
 
     def start(self):
@@ -79,8 +82,6 @@ class SpongeBot:
             new_files = new_snapshot.difference(self.snapshot)
             deleted_files = self.snapshot.difference(new_snapshot)
             if new_files:
-                print('new')
-                print(new_files)
                 # Since self.path is an absolute path, each file in files will
                 # also be an absolute path.
                 # Call the callback function on each new file while updating
@@ -93,8 +94,6 @@ class SpongeBot:
                                       **self.static_kwargs)
                         f.write(file + '\n')
             if deleted_files:
-                print('deleted')
-                print(deleted_files)
                 # Remove the deleted files from the snapshot file. This
                 # operation is linear in the number of total files in the
                 # directory, so it should probably be avoided to delete files
