@@ -18,7 +18,7 @@ The following parameters can be passed to SpongeBot:
 
 - **path**: The path to the directory that needs to be monitored
 - **callback**: A callable that takes a filepath as the first parameter
-- **interval**: The interval length in seconds that determines how frequently SpongeBot checks for new files. Defaults to 10 seconds.
+- **interval**: The interval length in seconds that determines how frequently SpongeBot checks for new files. Defaults to 2 seconds.
 - **static_args**: A list that will be unpacked and passed to the callback function
 - **static_kwargs**: A dictionary that will be unpacked and passed to the callback function
 - **snapshot_file**: A file that can be used by SpongeBot to keep track of the files tht are already in the directory. This is used to make SpongeBot more robust in the case of  system crashes. Defaults to "./.spongeBot_snapshot.txt".
