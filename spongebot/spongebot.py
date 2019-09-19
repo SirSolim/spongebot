@@ -25,7 +25,7 @@ class SpongeBot:
     def __init__(self,
                  path,
                  callback,
-                 interval=10.0,
+                 interval=2.0,
                  static_args=[],
                  static_kwargs=dict(),
                  snapshot_file='./.spongeBot_snapshot.txt'):
@@ -45,8 +45,8 @@ class SpongeBot:
         # as start() is called.
         if os.path.exists(self.snapshot_file):
             with open(self.snapshot_file, 'r') as f:
-                lines = f.readlines()
-            self.snapshot = set(lines)
+                files = [os.path.basename(f.strip()) for f in f.readlines()]
+            self.snapshot = set(files)
         else:
             # Otherwise create new snapshot. The files that are already in the
             # directory will be ignored.
@@ -79,19 +79,22 @@ class SpongeBot:
             new_files = new_snapshot.difference(self.snapshot)
             deleted_files = self.snapshot.difference(new_snapshot)
             if new_files:
+                print('new')
+                print(new_files)
                 # Since self.path is an absolute path, each file in files will
                 # also be an absolute path.
-                files = [os.path.join(self.path, f) for f in new_files]
                 # Call the callback function on each new file while updating
                 # the snapshot file. Since we can just append to the file, this
                 # is a fairly cheap opertion.
                 with open(self.snapshot_file, 'a') as f:
-                    for file in files:
-                        self.callback(file,
+                    for file in new_files:
+                        self.callback(os.path.join(self.path, file),
                                       *self.static_args,
                                       **self.static_kwargs)
                         f.write(file + '\n')
             if deleted_files:
+                print('deleted')
+                print(deleted_files)
                 # Remove the deleted files from the snapshot file. This
                 # operation is linear in the number of total files in the
                 # directory, so it should probably be avoided to delete files
@@ -101,7 +104,7 @@ class SpongeBot:
                 with open(self.snapshot_file, 'r') as old_f:
                     with open(temp_file, 'w') as new_f:
                         for line in old_f:
-                            if line.strip('\n') not in deleted_files:
+                            if line.strip() not in deleted_files:
                                 new_f.write(line)
                 # os.replace is an atomic operation.
                 #See https://docs.python.org/3/library/os.html#os.replace
