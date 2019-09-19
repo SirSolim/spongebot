@@ -25,5 +25,5 @@ setup(
     ],
     packages=["spongebot"],
     include_package_data=True,
-    install_requires=["feedparser", "html2text"],
+    install_requires=[],
 )

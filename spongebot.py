@@ -38,8 +38,19 @@ class SpongeBot:
         self.interval = float(interval)
         self.static_kwargs = static_kwargs
         self.static_args = static_args
-        self.snapshot = set(os.listdir(self.path))
         self.snapshot_file = os.path.abspath(snapshot_file)
+
+        # Load files from the snapshot file if it exists. Files in the
+        # directory that are not in the snapshot file will be processed as soon
+        # as start() is called.
+        if os.path.exists(self.snapshot_file):
+            with open(self.snapshot_file, 'r') as f:
+                lines = f.readlines()
+            self.snapshot = set(lines)
+        else:
+            # Otherwise create new snapshot. The files that are already in the
+            # directory will be ignored.
+            self.snapshot = set(os.listdir(self.path))
         self.running = False
 
     def start(self):
